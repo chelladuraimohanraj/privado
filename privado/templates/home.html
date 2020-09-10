@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,64 +9,93 @@
     <script src='{% static "js/jquery.js" %}'></script>
 </head>
 <style>
-    #output{
-        min-height: 200px;
-        max-height:600px;
-        width: 500px;
-        overflow:scroll;
-        border:2px solid grey;
+    *{
+        box-sizing: border-box;
     }
+    #output {
+        min-height: 200px;
+        max-height: 200px;
+        overflow: scroll;
+        border: 2px solid grey;
+    }
+    .contain{
+        width:100%;
+        max-height:500px;
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(14rem,1fr));
+        grid-gap: 2px;
+    }
+    .card{
+       padding:3rem;
+        border-radius: 1rem;
+        box-shadow: 0px 0px 10px 0px #000;
+    }
+   
+
+
+
 </style>
+
 <body>
     <h1>status:<span id='status'></span></h1>
-    <h1>POST</h1>
-    
-    <form id='post_data'>
-        {% csrf_token %}
-        <label>Enter customerid</label><br>
-        <input type='text' id='customer_id'>
-        <input type='submit' value='POST'>
-    </form>
-    <form id='get_data'>
-        {% csrf_token %}
-        <label>Enter customerid</label><br>
-        <input type='text' id='customer_id2'>
-        <input type='submit' value='GET'>
-    </form>
-    <div id='output'></div>
+
+    <div class="contain">
+        <div class="card">
+        <form id='post_data'>
+            <h1>POST</h1>
+            {% csrf_token %}
+            <label>Enter customerid</label><br>
+            <input type='text' id='customer_id'>
+            <input type='submit' value='POST'>
+        </form>
+        </div>
+        <div class="card">   
+            <div id='output'></div>
+        </div>
+        <div class="card">
+        <form id='get_data'>
+            {% csrf_token %}
+            <h1>GET</h1>
+            <label>Enter customerid</label><br>
+            <input type='text' id='customer_id2'>
+            <input type='submit' value='GET'>
+        </form>
+    </div>
+    </div>
+ 
     <script>
-        $(document).ready(function(){
-            $("#post_data").submit(function(e){
+        $(document).ready(function () {
+            $("#post_data").submit(function (e) {
                 e.preventDefault();
                 var customer_id = $('#customer_id').val();
                 $.ajax({
-                    type:'POST',
-                    url:'te/customer/'+customer_id+'/templates',
-                    data:{
-                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    type: 'POST',
+                    url: 'te/customer/' + customer_id + '/templates',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                     },
-                    success:function(response){
+                    success: function (response) {
                         $('#status').html(response['status']);
                         $('#customer_id').val('');
                     },
                 });
 
             });
-            $("#get_data").submit(function(e){
+            $("#get_data").submit(function (e) {
                 e.preventDefault();
                 var customer_id = $('#customer_id2').val();
                 $.ajax({
-                    type:'GET',
-                    url:'te/customer/'+customer_id+'/templates',
-                    data:{
-                        csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                    type: 'GET',
+                    url: 'te/customer/' + customer_id + '/templates',
+                    data: {
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
                     },
-                    success:function(response){
+                    success: function (response) {
                         $('#status').html(response['status']);
                         $('#customer_id').val('');
                         var string = JSON.stringify(response['data']);
                         $('#output').html(string);
-                        
+
                     },
                 });
 
